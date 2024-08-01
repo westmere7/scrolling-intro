@@ -1,0 +1,73 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Image Carousel with Mouse Wheel Scroll</title>  
+    <style>  
+        * {  
+            margin: 0;  
+            padding: 0;  
+            box-sizing: border-box;  
+        }  
+
+        body {  
+            height: 100vh;  
+            display: flex;  
+            justify-content: center;  
+            align-items: center;  
+            overflow: hidden;  
+            background-color: #f0f0f0;  
+        }  
+
+        .carousel-container {  
+            width: 100vw; /* Full viewport width */  
+            height: 500px; /* Adjust as needed */  
+            overflow: hidden;  
+            position: relative;  
+        }  
+
+        .carousel {  
+            display: flex;  
+            transition: transform 0.3s ease;  
+            gap: 10px; /* Gap between images */  
+            padding: 0 00px; /* Additional padding to fit the images correctly */  
+        }  
+
+        .carousel img {  
+            height: 100%; /* Adjust to fit the height of the container */  
+            flex-shrink: 0; /* Prevent images from shrinking */  
+            margin: 0;   
+        }  
+    </style>  
+</head>  
+<body>  
+    <div class="carousel-container">  
+        <div class="carousel">  
+            <img src="https://i.postimg.cc/6q85QPcq/Home-Cards-AI.jpg" alt="Image 1">  
+            <img src="https://i.postimg.cc/kGLMRyYc/Home-Cards-Brand-Guidelines.jpg" alt="Image 2">  
+            <img src="https://i.postimg.cc/YqJjvtJH/Home-Cards-Concepts.jpg" alt="Image 3">  
+            <img src="https://i.postimg.cc/Pf757tfw/Home-Cards-info.jpg" alt="Image 4">  
+            <img src="https://i.postimg.cc/gJS2mpv1/Home-Cards-misc.jpg" alt="Image 5">  
+        </div>  
+    </div>  
+    <script>  
+        const carousel = document.querySelector('.carousel');  
+        let scrollPosition = 0;  
+
+        document.addEventListener('wheel', (event) => {  
+            // Prevent the default scroll behavior  
+            event.preventDefault();  
+
+            // Reverse the direction of scrolling  
+            scrollPosition += event.deltaY * -0.5; // Adjust the multiplier for speed  
+            
+            // Limit the scroll position to prevent overflow  
+            scrollPosition = Math.max(Math.min(scrollPosition, 0), - (carousel.scrollWidth - carousel.clientWidth));  
+            
+            // Apply the transform to the carousel  
+            carousel.style.transform = `translateX(${scrollPosition}px)`;  
+        });  
+    </script>  
+</body>  
+</html>
