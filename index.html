@@ -60,7 +60,7 @@
             event.preventDefault();  
 
             // Reverse the direction of scrolling  
-            scrollPosition += event.deltaY * -0.5; // Adjust the multiplier for speed  
+            scrollPosition += event.deltaY * -1.2; // Adjust the multiplier for speed  
             
             // Limit the scroll position to prevent overflow  
             scrollPosition = Math.max(Math.min(scrollPosition, 0), - (carousel.scrollWidth - carousel.clientWidth));  
