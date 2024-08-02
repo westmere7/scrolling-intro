@@ -16,7 +16,7 @@
             flex-direction: column;  
             justify-content: center;  
             align-items: center;  
-            gap: 20px; /* Space between the two carousels */  
+            gap: 10px; /* Space between the two carousels */  
             overflow: hidden;  
             ///background-color: #f0f0f0;  
         }  
@@ -81,7 +81,7 @@
                 event.preventDefault();  
 
                 // Reverse the direction of scrolling for the first carousel  
-                scrollPosition1 += event.deltaY * -1.2; // Adjust the multiplier for speed  
+                scrollPosition1 += event.deltaY * -1; // Adjust the multiplier for speed  
 
                 // Limit the scroll position to prevent overflow for the first carousel  
                 scrollPosition1 = Math.max(Math.min(scrollPosition1, 0), -(carousel1.scrollWidth - carousel1.clientWidth));  
@@ -90,7 +90,7 @@
                 carousel1.style.transform = `translateX(${scrollPosition1}px)`;  
 
                 // Normal direction of scrolling for the second carousel  
-                scrollPosition2 += event.deltaY * 1.2; // Adjust the multiplier for speed  
+                scrollPosition2 += event.deltaY * 1; // Adjust the multiplier for speed  
 
                 // Limit the scroll position to prevent overflow for the second carousel  
                 scrollPosition2 = Math.max(Math.min(scrollPosition2, 0), -(carousel2.scrollWidth - carousel2.clientWidth));  
