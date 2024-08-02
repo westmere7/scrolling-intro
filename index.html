@@ -3,7 +3,7 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>Image Carousel with Opposite Scrolling</title>  
+    <title>Image Carousel with Infinite Scrolling</title>  
     <style>  
         * {  
             margin: 0;  
@@ -18,7 +18,6 @@
             align-items: center;  
             gap: 10px; /* Space between the two carousels */  
             overflow: hidden;  
-            //background-color: #f0f0f0;  
             position: relative; /* Add position relative to enable overlay positioning */  
         }  
         .carousel-container {  
@@ -29,102 +28,91 @@
         }  
         .carousel {  
             display: flex;  
-            transition: transform 0.3s ease;  
+            transition: transform 0s linear; /* No transition for smooth infinite scroll */  
             gap: 10px; /* Gap between images */  
         }  
         .carousel img {  
-            height: 100%; /* Adjust to fit the height of the container */  
+            height: 600px; /* Adjust to fit the height of the container */  
             flex-shrink: 0; /* Prevent images from shrinking */  
             border-radius: 20px; /* Add border radius for rounded corners */  
-        }  
-        #scroll-overlay {  
-            position: fixed;  
-            top: 0;  
-            left: 0;  
-            width: 100%;  
-            height: 100vh;  
-            background: transparent; /* Transparent overlay to intercept scroll events */  
-            z-index: 1000;  
         }  
     </style>  
 </head>  
 <body>  
-    <div id="scroll-overlay"></div> <!-- Add overlay to intercept scroll events -->  
     <div class="carousel-container">  
         <div class="carousel" id="carousel1">  
-            <img src="https://i.postimg.cc/6q85QPcq/Home-Cards-AI.jpg" alt="Image 1">  
-            <img src="https://i.postimg.cc/kGLMRyYc/Home-Cards-Brand-Guidelines.jpg" alt="Image 2">  
-            <img src="https://i.postimg.cc/YqJjvtJH/Home-Cards-Concepts.jpg" alt="Image 3">  
-            <img src="https://i.postimg.cc/Pf757tfw/Home-Cards-info.jpg" alt="Image 4">  
-            <img src="https://i.postimg.cc/gJS2mpv1/Home-Cards-misc.jpg" alt="Image 5">  
+            <!-- Images will be added dynamically here -->  
         </div>  
     </div>  
     <div class="carousel-container">  
         <div class="carousel" id="carousel2">  
-            <img src="https://i.postimg.cc/6q85QPcq/Home-Cards-AI.jpg" alt="Image 1">  
-            <img src="https://i.postimg.cc/kGLMRyYc/Home-Cards-Brand-Guidelines.jpg" alt="Image 2">  
-            <img src="https://i.postimg.cc/YqJjvtJH/Home-Cards-Concepts.jpg" alt="Image 3">  
-            <img src="https://i.postimg.cc/Pf757tfw/Home-Cards-info.jpg" alt="Image 4">  
-            <img src="https://i.postimg.cc/gJS2mpv1/Home-Cards-misc.jpg" alt="Image 5">  
+            <!-- Images will be added dynamically here -->  
         </div>  
     </div>  
     <script>  
         window.onload = () => {  
+            const imageUrls1 = [  
+                "https://genk.mediacdn.vn/thumb_w/640/139269124445442048/2024/8/2/gsmarena004-1722583693846-1722583694669961947567.jpg",  
+                "https://i.postimg.cc/kGLMRyYc/Home-Cards-Brand-Guidelines.jpg",  
+                "https://i.postimg.cc/YqJjvtJH/Home-Cards-Concepts.jpg",  
+                "https://i.postimg.cc/Pf757tfw/Home-Cards-info.jpg",  
+                "https://i.postimg.cc/gJS2mpv1/Home-Cards-misc.jpg"  
+            ];  
+
+            const imageUrls2 = [  
+                "https://i.postimg.cc/6q85QPcq/Home-Cards-AI.jpg",  
+                "https://genk.mediacdn.vn/thumb_w/640/139269124445442048/2024/7/25/pixel-9-pro-light-pink-3-1420x1420-1721918292575265322703.jpeg",  
+                "https://i.postimg.cc/YqJjvtJH/Home-Cards-Concepts.jpg",  
+                "https://i.postimg.cc/Pf757tfw/Home-Cards-info.jpg",  
+                "https://i.postimg.cc/gJS2mpv1/Home-Cards-misc.jpg"  
+            ];  
+
+            const addImagesToCarousel = (carousel, imageUrls) => {  
+                imageUrls.forEach(url => {  
+                    const img = document.createElement('img');  
+                    img.src = url;  
+                    img.alt = 'Image';  
+                    carousel.appendChild(img);  
+                });  
+                // Duplicate images for seamless scrolling  
+                imageUrls.forEach(url => {  
+                    const img = document.createElement('img');  
+                    img.src = url;  
+                    img.alt = 'Image';  
+                    carousel.appendChild(img);  
+                });  
+            };  
+
             const carousel1 = document.getElementById('carousel1');  
             const carousel2 = document.getElementById('carousel2');  
-            const overlay = document.getElementById('scroll-overlay');  
-            
+
+            addImagesToCarousel(carousel1, imageUrls1);  
+            addImagesToCarousel(carousel2, imageUrls2);  
+
             let scrollPosition1 = 0;  
-            let scrollPosition2 = -(carousel2.scrollWidth - carousel2.clientWidth); // Start at the end   
-            
-            // Remove transition temporarily  
-            carousel2.style.transition = 'none';  
-            
-            // Initialize the transform for the second carousel to appear at the end  
-            carousel2.style.transform = `translateX(${scrollPosition2}px)`;  
+            let scrollPosition2 = -(carousel2.scrollWidth / 2); // Start at the end of the first half of duplicated images   
 
-            // Force a reflow (this forces the browser to apply the style immediately)  
-            carousel2.offsetHeight;   
+            const scrollSpeed = 1; // Adjust the speed as needed
 
-            // Re-enable the transition  
-            carousel2.style.transition = 'transform 0.3s ease';  
+            // Function to scroll the carousels
+            const scrollCarousels = () => {
+                // Scroll first carousel to the left
+                scrollPosition1 -= scrollSpeed;
+                if (scrollPosition1 < -(carousel1.scrollWidth / 2)) {
+                    scrollPosition1 = 0;
+                }
+                carousel1.style.transform = `translateX(${scrollPosition1}px)`;
 
-            document.addEventListener('wheel', (event) => {  
-                // Prevent the default scroll behavior  
-                event.preventDefault();  
+                // Scroll second carousel to the right
+                scrollPosition2 += scrollSpeed;
+                if (scrollPosition2 > 0) {
+                    scrollPosition2 = -(carousel2.scrollWidth / 2);
+                }
+                carousel2.style.transform = `translateX(${scrollPosition2}px)`;
+            };
 
-                // Reverse the direction of scrolling for the first carousel  
-                scrollPosition1 += event.deltaY * -1; // Adjust the multiplier for speed  
-
-                // Limit the scroll position to prevent overflow for the first carousel  
-                scrollPosition1 = Math.max(Math.min(scrollPosition1, 0), -(carousel1.scrollWidth - carousel1.clientWidth));  
-
-                // Apply the transform to the first carousel  
-                carousel1.style.transform = `translateX(${scrollPosition1}px)`;  
-
-                // Normal direction of scrolling for the second carousel  
-                scrollPosition2 += event.deltaY * 1; // Adjust the multiplier for speed  
-
-                // Limit the scroll position to prevent overflow for the second carousel  
-                scrollPosition2 = Math.max(Math.min(scrollPosition2, 0), -(carousel2.scrollWidth - carousel2.clientWidth));  
-
-                // Apply the transform to the second carousel  
-                carousel2.style.transform = `translateX(${scrollPosition2}px)`;  
-
-                // Check if both carousels have reached their end positions  
-                let atEnd = scrollPosition1 === 0 && scrollPosition2 === 0;  
-                if (atEnd) {  
-                    overlay.style.display = 'none';  // Hide overlay  
-                } else {  
-                    overlay.style.display = 'block';  // Ensure overlay is displayed  
-                }  
-            });   
-
-            // Initial check  
-            let initialAtEnd = scrollPosition1 === 0 && scrollPosition2 === 0;  
-            if (initialAtEnd) {  
-                overlay.style.display = 'none';  // Hide overlay initially if at end  
-            }  
+            // Scroll the carousels automatically
+            setInterval(scrollCarousels, 30); // Adjust the interval as needed
         };  
     </script>  
 </body>  
